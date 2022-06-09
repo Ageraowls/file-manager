@@ -1,17 +1,24 @@
 import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 import crypto from 'crypto';
+import { currentlyDirectory } from '../os/currently_directory.js';
+import { finished } from 'stream';
 
-export const calculateHash = async () => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  fs.readFile(path.join(__dirname, 'files', 'fileToCalculateHashFor.txt'), (err, data) => {
-    if (err) throw err;
-    const str = data.toString();
-    const hash = crypto.createHash('sha256').update(str).digest('hex');
-    console.log(`\nhash: ${hash}\n`);
-  });
+export const calculateHash = async (pathToFile) => {
+  try {
+    pathToFile = resolve(pathToFile);
+    const hash = crypto.createHash('sha256');
+    const readableStream = fs.createReadStream(pathToFile);
+    readableStream.pipe(hash).setEncoding('hex').pipe(process.stdout);
+    finished(readableStream, (error) => {
+      if (error) {
+        console.error('Operation Failed');
+      } else {
+        process.stdout.write('\n');
+        currentlyDirectory();
+      }
+    });
+  } catch (error) {
+    console.error('Operation failed');
+  }
 };
-
-calculateHash();
