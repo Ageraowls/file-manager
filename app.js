@@ -8,6 +8,7 @@ import { stdin, stdout, chdir, cwd } from 'process';
 import { calculateHash } from './src/hash/hash.js';
 import { remove } from './src/fs/delete.js';
 import { create } from './src/fs/create.js';
+import { read } from './src/fs/read.js';
 
 const userInputArgs = process.argv.slice(2);
 const userName = userInputArgs.map((arg) => {
@@ -62,6 +63,10 @@ rl.on('line', async (line) => {
         console.error('Operation failed: no such directory');
         currentlyDirectory();
       }
+      break;
+
+    case 'read':
+      read(firstArg);
       break;
 
     case 'add':
