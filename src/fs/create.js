@@ -1,20 +1,15 @@
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs/promises';
+import { cwd } from 'process';
+import path, { resolve } from 'path';
+import { currentlyDirectory } from '../os/currently_directory.js';
 
-export const create = async () => {
-  const error = new TypeError('FS operation failed');
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  const pathToFilesFolder = path.join(__dirname, 'files', 'fresh.txt');
-  fs.stat(pathToFilesFolder, async (err) => {
-    if (!err) throw error;
-    else if (err.code === 'ENOENT') {
-      fs.writeFile(pathToFilesFolder, 'I am fresh and young', () => {
-        console.log('file created');
-      });
-    }
-  });
+export const create = async (fileName) => {
+  try {
+    const pathToFile = resolve(cwd(), fileName);
+    await (await fs.open(pathToFile, 'a')).close();
+    console.log(`${fileName} was created`);
+    currentlyDirectory();
+  } catch (error) {
+    console.error('Operation failed', error);
+  }
 };
-
-create();

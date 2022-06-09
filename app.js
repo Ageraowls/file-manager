@@ -7,6 +7,7 @@ import { currentlyDirectory } from './src/os/currently_directory.js';
 import { stdin, stdout, chdir, cwd } from 'process';
 import { calculateHash } from './src/hash/hash.js';
 import { remove } from './src/fs/delete.js';
+import { create } from './src/fs/create.js';
 
 const userInputArgs = process.argv.slice(2);
 const userName = userInputArgs.map((arg) => {
@@ -61,6 +62,10 @@ rl.on('line', async (line) => {
         console.error('Operation failed: no such directory');
         currentlyDirectory();
       }
+      break;
+
+    case 'add':
+      create(firstArg);
       break;
 
     case 'exit':
