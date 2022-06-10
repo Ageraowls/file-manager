@@ -2,13 +2,18 @@ import fs from 'fs';
 import path, { dirname, resolve } from 'path';
 import os from 'os';
 import * as readline from 'node:readline';
-import { homeDir } from './src/os/home_directory.js';
+import { showHomeDir } from './src/os/home_directory.js';
 import { currentlyDirectory } from './src/os/currently_directory.js';
 import { stdin, stdout, chdir, cwd } from 'process';
 import { calculateHash } from './src/hash/hash.js';
 import { remove } from './src/fs/delete.js';
 import { create } from './src/fs/create.js';
 import { read } from './src/fs/read.js';
+import { showCpus } from './src/os/cpus.js';
+import { showEol } from './src/os/eol.js';
+import { showUserName } from './src/os/user_name.js';
+import { showArchitecture } from './src/os/cp_architecture.js';
+import { copy } from './src/fs/copy.js';
 
 const userInputArgs = process.argv.slice(2);
 const userName = userInputArgs.map((arg) => {
@@ -17,6 +22,7 @@ const userName = userInputArgs.map((arg) => {
 });
 
 console.log(`Welcome to the File Manager, ${userName}!`);
+// chdir(os.homedir());
 currentlyDirectory();
 
 // prettier-ignore
@@ -80,8 +86,26 @@ rl.on('line', async (line) => {
       calculateHash(firstArg);
       break;
 
+    case 'os':
+      if (firstArg === '--homedir') {
+        showHomeDir();
+      } else if (firstArg === '--cpus') {
+        showCpus();
+      } else if (firstArg === '--EOL') {
+        showEol();
+      } else if (firstArg === '--username') {
+        showUserName();
+      } else if (firstArg === '--architecture') {
+        showArchitecture();
+      }
+      break;
+
     case 'rm':
       remove(firstArg);
+      break;
+
+    case 'cp':
+      copy(firstArg, secondArg);
       break;
 
     default:

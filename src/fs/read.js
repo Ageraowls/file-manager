@@ -5,9 +5,7 @@ import { currentlyDirectory } from '../os/currently_directory.js';
 
 export const read = async (pathToFile) => {
   try {
-    console.log(pathToFile, '1');
     pathToFile = resolve(pathToFile);
-    console.log(pathToFile, '2');
     const readableStream = createReadStream(pathToFile, { encoding: 'utf8' });
     readableStream.pipe(process.stdout);
     finished(readableStream, (error) => {
