@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs, { rename } from 'fs';
 import path, { dirname, resolve } from 'path';
 import os from 'os';
 import * as readline from 'node:readline';
@@ -13,7 +13,7 @@ import { showCpus } from './src/os/cpus.js';
 import { showEol } from './src/os/eol.js';
 import { showUserName } from './src/os/user_name.js';
 import { showArchitecture } from './src/os/cp_architecture.js';
-import { copy } from './src/fs/copy.js';
+import { renameFile } from './src/fs/rename.js';
 
 const userInputArgs = process.argv.slice(2);
 const userName = userInputArgs.map((arg) => {
@@ -22,7 +22,7 @@ const userName = userInputArgs.map((arg) => {
 });
 
 console.log(`Welcome to the File Manager, ${userName}!`);
-// chdir(os.homedir());
+chdir(os.homedir());
 currentlyDirectory();
 
 // prettier-ignore
@@ -97,6 +97,9 @@ rl.on('line', async (line) => {
         showUserName();
       } else if (firstArg === '--architecture') {
         showArchitecture();
+      } else {
+        console.log('Invalid input');
+        currentlyDirectory();
       }
       break;
 
@@ -104,8 +107,8 @@ rl.on('line', async (line) => {
       remove(firstArg);
       break;
 
-    case 'cp':
-      copy(firstArg, secondArg);
+    case 'rn':
+      renameFile(firstArg, secondArg);
       break;
 
     default:

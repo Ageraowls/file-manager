@@ -1,17 +1,15 @@
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs/promises';
+import { resolve, parse } from 'path';
+import { currentlyDirectory } from '../os/currently_directory.js';
 
-export const rename = async () => {
-  const error = new TypeError('FS operation failed');
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  const mainFileName = path.join(__dirname, 'files', 'wrongFilename.txt');
-
-  fs.rename(mainFileName, path.join(__dirname, 'files', 'properFilename.md'), (err) => {
-    if (err) throw error;
-    console.log('file was renamed');
-  });
+export const renameFile = async (pathToFile, newFilename) => {
+  try {
+    pathToFile = resolve(pathToFile);
+    const { dir } = parse(pathToFile);
+    const pathFromFile = resolve(dir, newFilename);
+    await fs.rename(pathToFile, pathFromFile);
+    currentlyDirectory();
+  } catch (error) {
+    console.error('Operation failed');
+  }
 };
-
-rename();
