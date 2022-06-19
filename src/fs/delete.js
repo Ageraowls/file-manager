@@ -1,6 +1,6 @@
 import { unlink } from 'fs/promises';
 import { resolve } from 'path';
-import { currentlyDirectory } from '../os/currently_directory.js';
+import { currentlyDirectory } from '../os/currentlyDirectory.js';
 
 export const remove = async (pathToFile) => {
   try {

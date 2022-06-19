@@ -1,7 +1,7 @@
 import { createReadStream } from 'fs';
 import { finished } from 'stream';
 import { resolve } from 'path';
-import { currentlyDirectory } from '../os/currently_directory.js';
+import { currentlyDirectory } from '../os/currentlyDirectory.js';
 
 export const read = async (pathToFile) => {
   try {

@@ -1,19 +1,21 @@
 import fs, { rename } from 'fs';
-import path, { dirname, resolve } from 'path';
+import { resolve } from 'path';
 import os from 'os';
-import * as readline from 'node:readline';
-import { showHomeDir } from './src/os/home_directory.js';
-import { currentlyDirectory } from './src/os/currently_directory.js';
-import { stdin, stdout, chdir, cwd } from 'process';
+import readline from 'node:readline';
+import { showHomeDir } from './src/os/homeDirectory.js';
+import { currentlyDirectory } from './src/os/currentlyDirectory.js';
+import { chdir, cwd } from 'process';
 import { calculateHash } from './src/hash/hash.js';
 import { remove } from './src/fs/delete.js';
 import { create } from './src/fs/create.js';
 import { read } from './src/fs/read.js';
 import { showCpus } from './src/os/cpus.js';
 import { showEol } from './src/os/eol.js';
-import { showUserName } from './src/os/user_name.js';
-import { showArchitecture } from './src/os/cp_architecture.js';
+import { showUserName } from './src/os/userName.js';
+import { showArchitecture } from './src/os/architecture.js';
 import { renameFile } from './src/fs/rename.js';
+import move from './src/fs/move.js';
+import { copy } from './src/fs/copy.js';
 
 const userInputArgs = process.argv.slice(2);
 const userName = userInputArgs.map((arg) => {
@@ -71,7 +73,7 @@ rl.on('line', async (line) => {
       }
       break;
 
-    case 'read':
+    case 'cat':
       read(firstArg);
       break;
 
@@ -109,6 +111,14 @@ rl.on('line', async (line) => {
 
     case 'rn':
       renameFile(firstArg, secondArg);
+      break;
+
+    case 'mv':
+      move(firstArg, secondArg);
+      break;
+
+    case 'cp':
+      copy(firstArg, secondArg);
       break;
 
     default:

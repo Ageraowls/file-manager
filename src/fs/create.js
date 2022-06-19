@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import { cwd } from 'process';
 import path, { resolve } from 'path';
-import { currentlyDirectory } from '../os/currently_directory.js';
+import { currentlyDirectory } from '../os/currentlyDirectory.js';
 
 export const create = async (fileName) => {
   try {

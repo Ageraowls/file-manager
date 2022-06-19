@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { resolve, parse } from 'path';
-import { currentlyDirectory } from '../os/currently_directory.js';
+import { currentlyDirectory } from '../os/currentlyDirectory.js';
 
 export const renameFile = async (pathToFile, newFilename) => {
   try {

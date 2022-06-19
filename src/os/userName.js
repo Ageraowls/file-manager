@@ -1,5 +1,5 @@
 import os, { userInfo } from 'os';
-import { currentlyDirectory } from './currently_directory.js';
+import { currentlyDirectory } from './currentlyDirectory.js';
 
 export const showUserName = () => {
   try {
