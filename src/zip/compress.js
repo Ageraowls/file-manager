@@ -1,18 +1,49 @@
-import fs from 'fs';
-import zlib from 'zlib';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { createReadStream, createWriteStream } from 'fs';
+import { parse, resolve } from 'path';
+import { stat } from 'fs/promises';
+import { pipeline } from 'stream/promises';
+import { createBrotliCompress } from 'zlib';
+import { currentlyDirectory } from '../os/currentlyDirectory.js';
 
-export const compress = async () => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  const mainPath = path.join(__dirname, 'files', 'fileToCompress.txt');
-  const readStream = fs.createReadStream(mainPath);
-  const writeStream = fs.createWriteStream(path.join(__dirname, 'files', 'fileToCompress.txt.gz'));
-  const compressStream = zlib.createGzip();
+async function isDirectory(path) {
+  try {
+    path = resolve(path);
+    const stats = await stat(path);
+    return stats.isDirectory();
+  } catch (error) {
+    return false;
+  }
+}
 
-  readStream.pipe(compressStream).pipe(writeStream);
-  writeStream.on('finish', () => console.log('file was compressed'));
-};
+async function isFile(path) {
+  try {
+    path = resolve(path);
+    const stats = await stat(path);
+    return stats.isFile();
+  } catch (error) {
+    return false;
+  }
+}
 
-compress();
+export default async function compress(pathToFile, pathToDestination) {
+  try {
+    const isNotDirectory = !(await isDirectory(pathToDestination));
+    const isNotFile = !(await isFile(pathToFile));
+
+    if (isNotDirectory) throw new Error("it's not a directory");
+    if (isNotFile) throw new Error("it's not a file");
+
+    pathToFile = resolve(pathToFile);
+    const { base } = parse(pathToFile);
+    const fileName = `${base}.br`;
+    pathToDestination = resolve(pathToDestination, fileName);
+
+    const readableStream = createReadStream(pathToFile);
+    const writableStream = createWriteStream(pathToDestination);
+    const brotliCompress = createBrotliCompress();
+    await pipeline(readableStream, brotliCompress, writableStream);
+    currentlyDirectory();
+  } catch (error) {
+    console.error('Operation failed');
+  }
+}

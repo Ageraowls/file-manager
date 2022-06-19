@@ -1,4 +1,4 @@
-import fs, { rename } from 'fs';
+import fs from 'fs';
 import { resolve } from 'path';
 import os from 'os';
 import readline from 'node:readline';
@@ -16,6 +16,8 @@ import { showArchitecture } from './src/os/architecture.js';
 import { renameFile } from './src/fs/rename.js';
 import move from './src/fs/move.js';
 import { copy } from './src/fs/copy.js';
+import compress from './src/zip/compress.js';
+import decompress from './src/zip/decompress.js';
 
 const userInputArgs = process.argv.slice(2);
 const userName = userInputArgs.map((arg) => {
@@ -119,6 +121,14 @@ rl.on('line', async (line) => {
 
     case 'cp':
       copy(firstArg, secondArg);
+      break;
+
+    case 'compress':
+      compress(firstArg, secondArg);
+      break;
+
+    case 'decompress':
+      decompress(firstArg, secondArg);
       break;
 
     default:
